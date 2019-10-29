@@ -5,10 +5,13 @@ Jack Baude double pendulum prediction
   given the mass of the two bobs, lengths of the pendulum arms
   and the intial starting postion 
 """
+
+
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.integrate as integrate
 
+# Classes should be Camel-cased DoublePen
 class doublePen:
     #Constants
     #dt is the spasce between time points that we are taking the dervative of 
@@ -20,15 +23,18 @@ class doublePen:
     #Gravity velocity
     G = 9.81
     def __init__(self, mass1, mass2, length1, length2, intTheta1, intTheta2):
+        # Uppercase variables are usually used for constants not attributes
         self.M1 = mass1
         self.M2 = mass2
         self.L1 = length1
         self.L2 = length2
+        # start_theta1 would be more pythonic than Camel-cased for attributes
         self.startTheta1 = intTheta1
         self.startTheta2 = intTheta2
         
     
     #methods to make the equations easier to read
+    # "from numpy import sin,cos" would do the same thing and be clearer
     def sin(self,x):
         return np.sin(x)
     def cos(self,x):
@@ -48,6 +54,7 @@ class doublePen:
             dydx[0] = state[1]
         
             del_ = state[2] - state[0]
+            # importing cos and sin would replace all the self.sin() with just sin()
             den1 = (self.M1 + self.M2)*self.L1 - self.M2*self.L1*self.cos(del_)*self.cos(del_)
             dydx[1] = (self.M2*self.L1*state[1]*state[1]*self.sin(del_)*self.cos(del_) +
                        self.M2*self.G*self.sin(state[2])*self.cos(del_) +
@@ -72,6 +79,7 @@ class doublePen:
         #we need the amount of time points so we can find the nth time point in the array that the deriv returns so we can calcualte where the pen is in space
         amountOfTimePoints = self.totalTime / self.dt
         #by multiplying the amount of time points by the percentage of points we can get the index we are looking for in the list that deriv returns
+        # lower case TS
         TS = int((amountOfTimePoints * tPercent) - self.dt)
         cords = self.getMassCords()
         print ("\n{} sample of {} time samples" .format(TS, amountOfTimePoints))
@@ -85,6 +93,7 @@ class doublePen:
         plt.show()
     
     #returns the x and y points of both mass 1 and mass 2
+    # more pythonic would be snake case the method name 
     def getMassCords(self):
         state = [self.startTheta1, self.v1, self.startTheta2, self.v2]
         dydt = integrate.odeint(self.equation, state, self.getTimeArray())
@@ -101,11 +110,16 @@ class doublePen:
     #returns a time array 
     def getTimeArray(self):
         t = np.arange(0.0, self.totalTime, self.dt)
+        # don't need parentheses
         return (t)
 
+def main():
+  p1 = doublePen(1,1,1,1,120.0,0)
+  p1.calculate(9.134)
 
-p1 = doublePen(1,1,1,1,120.0,0)
-p1.calculate(9.134)
+# this would let you use the class DoublePen from other python programs or run as a program
+if __name__ == "__main__":
+   main()
 
 
     
